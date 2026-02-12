@@ -58,31 +58,26 @@ async def add_text_episodes(graphiti):
             # Timezone-naive datetimes cause intermittent errors in Graphiti's 
             # edge contradiction resolution algorithm
             "reference_time": datetime(2026, 1, 5, tzinfo=timezone.utc),
-            "source": EpisodeType.message
         },
         {
             "name": "Project Alpha Blocked",
             "body": "Project Alpha is now blocked. The API integration with the payment provider is failing. John is investigating.",
             "reference_time": datetime(2026, 1, 8, tzinfo=timezone.utc),
-            "source": EpisodeType.message
         },
         {
             "name": "Project Alpha Leadership Change",
             "body": "John has been reassigned to Project Beta. Sarah is now leading Project Alpha.",
             "reference_time": datetime(2026, 1, 12, tzinfo=timezone.utc),
-            "source": EpisodeType.message
         },
         {
             "name": "Project Alpha Unblocked",
             "body": "Sarah resolved the payment provider API issue. Project Alpha is now back in progress. Deadline moved to January 20th.",
             "reference_time": datetime(2026, 1, 14, tzinfo=timezone.utc),
-            "source": EpisodeType.message
         },
         {
             "name": "Project Alpha Complete",
             "body": "Sarah completed Project Alpha ahead of the new deadline. All tests passing. Deployed to production.",
             "reference_time": datetime(2026, 1, 18, tzinfo=timezone.utc),
-            "source": EpisodeType.message
         }
     ]
     
@@ -98,10 +93,15 @@ async def add_text_episodes(graphiti):
             
             # TUTORIAL NOTE: add_episode is async because Graphiti uses an LLM
             # to extract entities and relationships. This can take 1-3 seconds per episode.
+            #
+            # API NOTE: Both `source` and `source_description` are required:
+            #   - source: The EpisodeType enum (message, text, json)
+            #   - source_description: A freetext label describing the source
             await graphiti.add_episode(
                 name=ep["name"],
                 episode_body=ep["body"],
-                source_description=ep["source"].value,
+                source=EpisodeType.message,
+                source_description="team chat",
                 reference_time=ep["reference_time"]
             )
             
@@ -147,13 +147,14 @@ async def add_json_episode(graphiti):
     ) as progress:
         task = progress.add_task("Adding structured update", total=None)
         
-        # Convert JSON to string for episode body
-        episode_body = json.dumps(project_update, indent=2)
-        
+        # TUTORIAL NOTE: For JSON episodes, you can pass the Python dictionary
+        # directly as episode_body. Graphiti handles serialization internally.
+        # Use source=EpisodeType.json to tell Graphiti this is structured data.
         await graphiti.add_episode(
             name="Project Alpha Structured Update",
-            episode_body=episode_body,
-            source_description=EpisodeType.json.value,
+            episode_body=json.dumps(project_update, indent=2),
+            source=EpisodeType.json,
+            source_description="project management tool",
             reference_time=reference_time
         )
         
@@ -206,7 +207,8 @@ async def main():
         console.print(f"\n[bold red]❌ Error:[/bold red] {str(e)}")
         console.print("\nMake sure:")
         console.print("  1. Neo4j is running (docker-compose up -d)")
-        console.print("  2. Graphiti is initialized (python src/setup_graphiti.py)")
+        console.print("  2. Your .env file has a valid OPENAI_API_KEY")
+        console.print("  3. Run: python src/setup_graphiti.py first")
         exit(1)
 
 

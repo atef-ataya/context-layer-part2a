@@ -5,12 +5,11 @@ Complete end-to-end demonstration script for YouTube video recording.
 
 This script orchestrates the entire demo flow:
 1. Title banner and intro
-2. Neo4j connection check
-3. Graphiti initialization
-4. RAG failure simulation (the problem)
-5. Episode ingestion (building the solution)
-6. Temporal queries (the magic moment)
-7. Summary and next steps
+2. Graphiti initialization (includes Neo4j connection)
+3. RAG failure simulation (the problem)
+4. Episode ingestion (building the solution)
+5. Temporal queries (the magic moment)
+6. Summary and next steps
 
 Designed to be run on camera with clear visual output and pauses
 for the presenter to explain concepts between sections.
@@ -25,8 +24,6 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Prompt
-from neo4j import AsyncGraphDatabase
 
 # Import our demo modules
 from demo_rag_failure import main as demo_rag_failures
@@ -63,41 +60,6 @@ def print_banner():
     console.print("atefataya.com[/dim]\n")
 
 
-async def check_neo4j_connection() -> bool:
-    """
-    Verify that Neo4j is running and accessible.
-    
-    Returns:
-        bool: True if connection successful, False otherwise
-    """
-    console.print("[bold yellow]Checking Neo4j connection...[/bold yellow]")
-    
-    load_dotenv()
-    import os
-    
-    neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    neo4j_user = os.getenv("NEO4J_USER", "neo4j")
-    neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
-    
-    try:
-        driver = AsyncGraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
-        async with driver.session() as session:
-            result = await session.run("RETURN 1 as test")
-            await result.single()
-        
-        await driver.close()
-        console.print("✓ Neo4j is running and accessible\n", style="green")
-        return True
-        
-    except Exception as e:
-        console.print(f"[bold red]❌ Neo4j connection failed![/bold red]")
-        console.print(f"Error: {str(e)}\n")
-        console.print("[yellow]Please start Neo4j:[/yellow]")
-        console.print("  docker-compose up -d")
-        console.print("\nThen wait 10-15 seconds for Neo4j to fully start.")
-        return False
-
-
 def pause_for_presenter(message: str = "Press Enter to continue..."):
     """
     Pause execution to allow presenter to speak to camera.
@@ -128,39 +90,35 @@ async def main():
     
     pause_for_presenter()
     
-    # 2. NEO4J CONNECTION CHECK
+    # 2. GRAPHITI INITIALIZATION (also verifies Neo4j connection)
     console.print("\n" + "=" * 80 + "\n")
-    console.print("[bold cyan]STEP 1: Environment Check[/bold cyan]\n")
-    
-    if not await check_neo4j_connection():
-        console.print("[bold red]Demo cannot proceed without Neo4j. Exiting.[/bold red]")
-        sys.exit(1)
-    
-    # 3. GRAPHITI INITIALIZATION
-    console.print("=" * 80 + "\n")
-    console.print("[bold cyan]STEP 2: Initialize Graphiti[/bold cyan]\n")
+    console.print("[bold cyan]STEP 1: Initialize Graphiti + Neo4j[/bold cyan]\n")
     
     try:
         graphiti = await setup_graphiti()
         console.print()
     except Exception as e:
         console.print(f"[bold red]Failed to initialize Graphiti: {e}[/bold red]")
+        console.print("\n[yellow]Please ensure:[/yellow]")
+        console.print("  1. Neo4j is running: docker-compose up -d")
+        console.print("  2. Wait 10-15 seconds for Neo4j to start")
+        console.print("  3. Your .env file has a valid OPENAI_API_KEY")
         sys.exit(1)
     
     pause_for_presenter("Press Enter to see why RAG fails...")
     
-    # 4. RAG FAILURE SIMULATION
+    # 3. RAG FAILURE SIMULATION
     console.print("\n" + "=" * 80 + "\n")
-    console.print("[bold cyan]STEP 3: The Problem - RAG Failure Modes[/bold cyan]\n")
+    console.print("[bold cyan]STEP 2: The Problem - RAG Failure Modes[/bold cyan]\n")
     
     # Run the RAG failure demo (synchronous)
     demo_rag_failures()
     
     pause_for_presenter("Press Enter to see the solution...")
     
-    # 5. EPISODE INGESTION
+    # 4. EPISODE INGESTION
     console.print("\n" + "=" * 80 + "\n")
-    console.print("[bold cyan]STEP 4: Building Memory - Add Episodes[/bold cyan]\n")
+    console.print("[bold cyan]STEP 3: Building Memory - Add Episodes[/bold cyan]\n")
     
     console.print(Panel.fit(
         "Now we'll add the same Project Alpha information to Graphiti.\n"
@@ -180,9 +138,9 @@ async def main():
     
     pause_for_presenter("Press Enter to query the memory...")
     
-    # 6. TEMPORAL QUERIES (The Magic Moment)
+    # 5. TEMPORAL QUERIES (The Magic Moment)
     console.print("\n" + "=" * 80 + "\n")
-    console.print("[bold cyan]STEP 5: The Magic - Temporal Queries[/bold cyan]\n")
+    console.print("[bold cyan]STEP 4: The Magic - Temporal Queries[/bold cyan]\n")
     
     console.print(Panel.fit(
         "[bold yellow]This is where the value becomes clear.[/bold yellow]\n\n"
@@ -211,7 +169,7 @@ async def main():
         await graphiti.close()
         sys.exit(1)
     
-    # 7. SUMMARY AND COMPARISON
+    # 6. SUMMARY AND COMPARISON
     console.print("\n\n" + "=" * 80 + "\n")
     console.print("[bold cyan]Summary: RAG vs. Memory[/bold cyan]\n")
     
@@ -242,7 +200,7 @@ async def main():
     comparison_table.add_row(
         "Temporal Awareness",
         "❌ None\n(all docs treated equally)",
-        "✓ Native\n(time is first-class)"
+        "✓ Native\n(valid_at / invalid_at)"
     )
     comparison_table.add_row(
         "Causality",
@@ -257,12 +215,12 @@ async def main():
     comparison_table.add_row(
         "Historical Queries",
         "❌ Impossible",
-        "✓ Point-in-time accuracy"
+        "✓ Bi-temporal model"
     )
     
     console.print(comparison_table)
     
-    # 8. NEXT STEPS
+    # 7. NEXT STEPS
     console.print("\n")
     console.print(Panel.fit(
         "[bold green]✓ Demo Complete![/bold green]\n\n"

@@ -5,9 +5,8 @@ Initializes the Graphiti temporal knowledge graph and builds necessary indices i
 
 This module handles:
 1. Loading environment variables (Neo4j connection, OpenAI API key)
-2. Establishing connection to Neo4j database
-3. Initializing Graphiti with the configured LLM
-4. Building graph indices for optimal query performance
+2. Initializing Graphiti with the configured LLM
+3. Building graph indices for optimal query performance
 
 TUTORIAL NOTE: This setup must run before adding episodes or querying the graph.
 Neo4j must be running (via docker-compose) before executing this script.
@@ -15,11 +14,8 @@ Neo4j must be running (via docker-compose) before executing this script.
 
 import os
 import asyncio
-from datetime import timezone
 from dotenv import load_dotenv
 from graphiti_core import Graphiti
-from graphiti_core.nodes import EpisodeType
-from neo4j import AsyncGraphDatabase
 from rich.console import Console
 from rich.panel import Panel
 
@@ -61,19 +57,9 @@ async def setup_graphiti() -> Graphiti:
     ))
     
     try:
-        # Test Neo4j connection before proceeding
-        console.print("Testing Neo4j connection...", style="yellow")
-        driver = AsyncGraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
-        
-        # Verify connection with a simple query
-        async with driver.session() as session:
-            result = await session.run("RETURN 1 as test")
-            await result.single()
-        
-        console.print("✓ Neo4j connection successful", style="green")
-        
-        # TUTORIAL NOTE: Graphiti requires the Neo4j driver to be passed in
-        # It will use this driver to store and query the temporal knowledge graph
+        # TUTORIAL NOTE: Graphiti takes Neo4j credentials directly.
+        # It creates and manages the database driver internally.
+        console.print("Connecting to Neo4j and initializing Graphiti...", style="yellow")
         graphiti = Graphiti(neo4j_uri, neo4j_user, neo4j_password)
         
         # Build indices for optimal query performance
