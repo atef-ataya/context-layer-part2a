@@ -3,12 +3,10 @@ services:
     image: neo4j:latest
     restart: always
     ports:
-      - "7474:7474"   # Browser UI
-      - "7687:7687"   # Bolt protocol
+      - '7474:7474' # Browser UI
+      - '7687:7687' # Bolt protocol
     environment:
       - NEO4J_AUTH=neo4j/password
-      - NEO4J_server_memory_heap_max__size=4g
-      - NEO4J_server_memory_pagecache_size=4g
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs

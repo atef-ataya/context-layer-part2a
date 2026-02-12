@@ -91,8 +91,7 @@ async def query_current_leader(graphiti):
     console.print("[bold]Graphiti Response:[/bold]")
     display_results(results)
     
-    console.print("\n[dim]💡 RAG would return: Documents mentioning both John AND Sarah")
-    console.print("   Memory returns: Sarah (current state, old facts already invalidated)[/dim]")
+    console.print("\n[dim]💡 RAG would return: Documents mentioning both John AND Sarah\n   Memory returns: Sarah (current state, old facts already invalidated)[/dim]")
     
     return results
 
@@ -129,8 +128,7 @@ async def query_historical_leader(graphiti):
     console.print(f"[bold]Graphiti Response (asking about January 8, 2026):[/bold]")
     display_results(results)
     
-    console.print("\n[dim]💡 RAG would return: Same documents as Query 1 (no temporal awareness)")
-    console.print("   Memory returns: Edges with temporal metadata showing John led until Jan 12[/dim]")
+    console.print("\n[dim]💡 RAG would return: Same documents as Query 1 (no temporal awareness)\n   Memory returns: Edges with temporal metadata showing John led until Jan 12[/dim]")
     
     return results
 
@@ -149,8 +147,7 @@ async def query_current_status(graphiti):
     console.print("[bold]Graphiti Response:[/bold]")
     display_results(results)
     
-    console.print("\n[dim]💡 RAG might return: The 'BLOCKED' document (semantically richer)")
-    console.print("   Memory returns: Complete/Deployed (current accurate state)[/dim]")
+    console.print("\n[dim]💡 RAG might return: The 'BLOCKED' document (semantically richer)\n   Memory returns: Complete/Deployed (current accurate state)[/dim]")
     
     return results
 
@@ -174,8 +171,7 @@ async def query_historical_status(graphiti):
     console.print(f"[bold]Graphiti Response (asking about January 8, 2026):[/bold]")
     display_results(results)
     
-    console.print("\n[dim]💡 RAG would return: Mixed results (blocked + in progress + complete)")
-    console.print("   Memory returns: Edges showing Blocked status with temporal validity[/dim]")
+    console.print("\n[dim]💡 RAG would return: Mixed results (blocked + in progress + complete)\n   Memory returns: Edges showing Blocked status with temporal validity[/dim]")
     
     return results
 
@@ -203,8 +199,7 @@ async def query_entity_history(graphiti):
     console.print("[bold]Graphiti Response:[/bold]")
     display_results(results)
     
-    console.print("\n[dim]💡 RAG would return: Disconnected chunks with no timeline or causality")
-    console.print("   Memory returns: Complete narrative with temporal flow[/dim]")
+    console.print("\n[dim]💡 RAG would return: Disconnected chunks with no timeline or causality\n   Memory returns: Complete narrative with temporal flow[/dim]")
     
     return results
 

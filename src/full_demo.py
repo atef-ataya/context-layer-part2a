@@ -22,6 +22,7 @@ import asyncio
 import sys
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from rich.markup import escape
 from rich.console import Console
 from rich.panel import Panel
 
@@ -56,8 +57,7 @@ def print_banner():
 ╚══════════════════════════════════════════════════════════════╝
     """
     console.print(banner, style="bold cyan")
-    console.print("\n[dim]A hands-on demonstration by Atef Ataya")
-    console.print("atefataya.com[/dim]\n")
+    console.print("\n[dim]A hands-on demonstration by Atef Ataya\natefataya.com[/dim]\n")
 
 
 def pause_for_presenter(message: str = "Press Enter to continue..."):
@@ -253,5 +253,5 @@ if __name__ == "__main__":
         console.print("\n\n[yellow]Demo interrupted by user. Goodbye![/yellow]")
         sys.exit(0)
     except Exception as e:
-        console.print(f"\n[bold red]Unexpected error: {e}[/bold red]")
+        console.print(f"\n[bold red]Unexpected error:[/bold red] {escape(str(e))}")
         sys.exit(1)
