@@ -1,0 +1,7 @@
+# Core dependencies
+graphiti-core
+python-dotenv
+
+# Terminal output formatting for beautiful demo display
+rich
+colorama

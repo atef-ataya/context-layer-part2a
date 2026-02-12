@@ -1,0 +1,48 @@
+{
+  "episodes": [
+    {
+      "name": "Project Alpha Kickoff",
+      "body": "Started Project Alpha today. John has been assigned as the lead engineer.",
+      "type": "message",
+      "reference_time": "2026-01-05T00:00:00Z"
+    },
+    {
+      "name": "Project Alpha Blocked",
+      "body": "Project Alpha is now blocked. The API integration with the payment provider is failing. John is investigating.",
+      "type": "message",
+      "reference_time": "2026-01-08T00:00:00Z"
+    },
+    {
+      "name": "Project Alpha Leadership Change",
+      "body": "John has been reassigned to Project Beta. Sarah is now leading Project Alpha.",
+      "type": "message",
+      "reference_time": "2026-01-12T00:00:00Z"
+    },
+    {
+      "name": "Project Alpha Unblocked",
+      "body": "Sarah resolved the payment provider API issue. Project Alpha is now back in progress. Deadline moved to January 20th.",
+      "type": "message",
+      "reference_time": "2026-01-14T00:00:00Z"
+    },
+    {
+      "name": "Project Alpha Complete",
+      "body": "Sarah completed Project Alpha ahead of the new deadline. All tests passing. Deployed to production.",
+      "type": "message",
+      "reference_time": "2026-01-18T00:00:00Z"
+    },
+    {
+      "name": "Project Alpha Structured Update",
+      "body": {
+        "id": "ALPHA-001",
+        "project": "Project Alpha",
+        "status": "IN_PROGRESS",
+        "assignee": "Sarah",
+        "previous_assignee": "John",
+        "priority": "HIGH",
+        "notes": "Sarah took over from John due to reassignment to Project Beta."
+      },
+      "type": "json",
+      "reference_time": "2026-01-15T00:00:00Z"
+    }
+  ]
+}
